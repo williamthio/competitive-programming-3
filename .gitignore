@@ -1,1 +1,5 @@
-debug/
+**/input
+**/output
+**/bin
+*.class
+
