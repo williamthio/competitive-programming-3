@@ -3,7 +3,7 @@ import java.io.PrintStream;
 import java.math.BigInteger;
 import java.util.Scanner;
 
-class Uva_11947 {
+class UVa_11947 {
 
 	void start(Scanner scan) {
 		int[] nums = new int[101];
