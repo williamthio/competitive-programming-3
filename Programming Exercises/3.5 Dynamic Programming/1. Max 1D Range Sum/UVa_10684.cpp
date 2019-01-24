@@ -19,10 +19,10 @@ void uva_10684() {
                 sum = 0;
         }
 
-        if (ans < 0)
+        if (ans <= 0)
             cout << "Losing streak.\n";
         else
-            cout << "The maximum winning streak is " << ans << "\n";
+            cout << "The maximum winning streak is " << ans << ".\n";
     }
 }
 
