@@ -1,63 +1,69 @@
-import java.io.FileInputStream;
-import java.io.PrintStream;
-import java.math.BigInteger;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
+import java.math.*;
 
-class UVa_11947 {
+class Main {
+    void start(BufferedReader br) throws Exception {
+        String line = null;
+        while ((line = br.readLine()) != null) {
+            ArrayList<BigInteger> nums = new ArrayList<>();
+            StringTokenizer st = new StringTokenizer(line);
 
-	void start(Scanner scan) {
-		int[] nums = new int[101];
-		BigInteger[] sums = new BigInteger[100];
-		
-		while (scan.hasNextInt()) {
-			int n = 0;
-			int num = scan.nextInt();
-			
-			while (num != -999999) {
-				nums[n++] = num;
-				num = scan.nextInt();
-			}
-			
-			for (int i = 0; i < n; i++)
-				sums[i] = new BigInteger(String.valueOf(nums[i]));
-			
-			boolean haveZero = false;
-			for (int i = 1; i < n; i++) {
-				if (nums[i] == 0 || nums[i - 1] == 0) {
-					haveZero = true;
-					continue;
-				}
-				sums[i] = sums[i].multiply(sums[i - 1]);
-			}
-			
-			BigInteger ans = null;
-			for (int i = 0; i < n; i++) {
-				if (nums[i] == 0)
-					continue;
-				for (int j = i; j < n; j++) {
-					if (nums[j] == 0)
-						break;
-					BigInteger v = new BigInteger(sums[j].toString());
-					if (i > 0 && nums[i - 1] != 0)
-						v = v.divide(sums[i - 1]);
-					if (ans == null || ans.compareTo(v) < 0)
-						ans = v;
-				}
-			}
-			
-			if (ans == null)
-				ans = BigInteger.ZERO;
-			
-			if (haveZero)
-				System.out.println(ans.compareTo(BigInteger.ZERO) < 0 ? "0" : ans.toString());
-			else
-				System.out.println(ans.toString());
-		}
-	}
-	
-	public static void main(String[] args) throws Exception {
-		Scanner scan = new Scanner(System.in);
-		new Uva_11947().start(scan);
-		scan.close();
-	}
+            if (!st.hasMoreTokens())
+                continue;
+
+            String token = st.nextToken();
+            while (!token.equals("-999999")) {
+                nums.add(new BigInteger(token));
+                token = st.nextToken();
+            }
+
+            if (nums.isEmpty())
+                continue;
+
+            boolean haveZero = false;
+            for (int i = 1; i < nums.size(); i++) {
+                if (nums.get(i).equals(BigInteger.ZERO) ||
+                        nums.get(i - 1).equals(BigInteger.ZERO)) {
+                    haveZero = true;
+                    continue;
+                }
+                nums.set(i, nums.get(i).multiply(nums.get(i - 1)));
+            }
+
+            BigInteger ans = null;
+            for (int i = 0; i < nums.size(); i++) {
+                if (nums.get(i).equals(BigInteger.ZERO))
+                    continue;
+                for (int j = i; j < nums.size(); j++) {
+                    if (nums.get(j).equals(BigInteger.ZERO))
+                        break;
+                    BigInteger v = nums.get(j);
+                    if (i > 0 && !nums.get(i - 1).equals(BigInteger.ZERO))
+                        v = v.divide(nums.get(i - 1));
+                    if (ans == null || ans.compareTo(v) < 0)
+                        ans = v;
+                }
+            }
+
+            if (ans == null)
+                ans = BigInteger.ZERO;
+
+            if (haveZero) {
+                if (ans.compareTo(BigInteger.ZERO) < 0)
+                    System.out.println("0");
+                else
+                    System.out.println(ans);
+            } else {
+                System.out.println(ans);
+            }
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        new Main().start(br);
+        br.close();
+    }
 }
+
