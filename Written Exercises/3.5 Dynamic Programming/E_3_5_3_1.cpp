@@ -2,6 +2,11 @@
 #include <algorithm>
 #include <cstring>
 #include <iomanip>
+#include <queue>
+#include <cmath>
+#include <functional>
+#include <cstring>
+#include <iomanip>
 
 using namespace std;
 
@@ -102,12 +107,99 @@ void e_3_5_3_1_cc_uva_00674() {
 }
 
 void e_3_5_3_1_tsp_uva_10496() {
+    int tc;
+    cin >> tc;
+    while (tc--) {
+        int size;
+        cin >> size;
+        cin >> size;
+
+        int bs[11][2];
+        cin >> bs[0][0];
+        cin >> bs[0][1];
+
+        function<int(int, int)> dist = [&](int idx1, int idx2) -> int {
+            return abs(bs[idx1][0] - bs[idx2][0]) + abs(bs[idx1][1] - bs[idx2][1]);
+        };
+
+        int n;
+        cin >> n;
+
+        for (int i = 1; i <= n; i++) {
+            cin >> bs[i][0];
+            cin >> bs[i][1];
+        }
+
+        int states[1 << 10][10];
+
+        for (int i = 0; i < n; i++)
+            states[1 << i][i] = dist(0, i + 1);
+
+        for (int visited = 2; visited < (1 << n); visited++) {
+            if (!(visited & (visited - 1)))
+                continue;
+            for (int i = 0; i < n; i++) {
+                if (!(visited & (1 << i)))
+                    continue;
+                int prev = visited & (~(1 << i));
+                int minDist = 1 << 30;
+                for (int j = 0; j < n; j++) {
+                    if (!(prev & (1 << j)))
+                        continue;
+                    if (minDist > states[prev][j] + dist(j + 1, i + 1))
+                        minDist = states[prev][j] + dist(j + 1, i + 1);
+                }
+                states[visited][i] = minDist;
+            }
+        }
+
+        int optimal = 1 << 30;
+        for (int i = 0; i < n; i++) {
+            if (optimal > states[(1 << n) - 1][i] + dist(i + 1, 0))
+                optimal = states[(1 << n) - 1][i] + dist(i + 1, 0);
+        }
+
+        cout << "The shortest path has length " << optimal << "\n";
+    }
+}
+
+void e_3_5_3_1_uva_10003() {
+    int len;
+    while (cin >> len, len) {
+        int n;
+        cin >> n;
+
+        int cuts[51];
+        cuts[0] = 0;
+        cuts[n + 1] = len;
+
+        for (int i = 1; i <= n; i++)
+            cin >> cuts[i];
+
+        n += 2;
+
+        int states[51][51];
+        
+        for (int i = 0; i + 1 < n; i++)
+            states[i][i + 1] = 0;
+
+        for (int len = 2; len < n; len++) {
+            for (int i = 0; i + len < n; i++) {
+                int minPrice = 1 << 30;
+                for (int j = i + 1; j < i + len; j++)
+                    minPrice = min(minPrice, states[i][j] + states[j][i + len] + cuts[i + len] - cuts[i]);
+                states[i][i + len] = minPrice;
+            }
+        }
+
+        cout << "The minimum cutting is " << states[0][n - 1] << ".\n";
+    }
 }
 
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
-    e_3_5_3_1_cc_uva_00674();
+    e_3_5_3_1_uva_10003();
     return 0;
 }
 
