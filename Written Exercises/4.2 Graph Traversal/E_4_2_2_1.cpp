@@ -2,7 +2,6 @@
 #include <queue>
 #include <functional>
 #include <cstring>
-#include <string>
 
 using namespace std;
 
@@ -27,59 +26,32 @@ void e_4_2_2_1() {
             }
         }
 
-        bool relationships[100][100];
-        memset(relationships, true, sizeof relationships);
-
-        queue<int> q;
         bool visited[100];
-        memset(visited, false, sizeof visited);
 
-        for (int i = 0; i < n; i++) {
-            relationships[0][i] = false;
-            relationships[i][i] = false;
-            relationships[i][0] = false;
-        }
-
-        q.push(0);
-        while (!q.empty()) {
-            int idx = q.front();
-            q.pop();
+        function<void(int)> dfs = [&](int idx) {
             visited[idx] = true;
-            relationships[0][idx] = true;
-            relationships[idx][idx] = true;
             for (int j = 1; j <= edges[idx][0]; j++) {
                 if (!visited[edges[idx][j]])
-                    q.push(edges[idx][j]);
+                    dfs(edges[idx][j]);
             }
-        }
+        };
 
-        for (int x = 1; x < n; x++) {
-            if (!relationships[x][x]) {
-                for (int j = 1; j < n; j++) {
-                    relationships[j][x] = false;
-                    relationships[x][j] = false;
-                }
-                continue;
-            }
-            memset(visited, false, sizeof visited);
-            queue<int> qu;
-            qu.push(0);
-            while (!qu.empty()) {
-                int idx = qu.front();
-                qu.pop();
+        function<void(int)> bfs = [&](int start) {
+            queue<int> q;
+            q.push(start);
+            while (!q.empty()) {
+                int idx = q.front();
+                q.pop();
                 visited[idx] = true;
-                if (idx == x)
-                    continue;
-                relationships[x][idx] = false;
                 for (int j = 1; j <= edges[idx][0]; j++) {
                     if (!visited[edges[idx][j]])
-                        qu.push(edges[idx][j]);
+                        q.push(edges[idx][j]);
                 }
             }
-        }
+        };
 
         function<void()> printSeparator = [&]() {
-            cout << "+";
+            cout << "\n+";
             for (int i = 0; i < n; i++) {
                 if (i == n - 1)
                     cout << "-+\n";
@@ -88,13 +60,30 @@ void e_4_2_2_1() {
             }
         };
 
-        cout << "Case " << ci << ":\n";
+        cout << "Case " << ci << ":";
         printSeparator();
+        
+        bool reachable[100];
+        memset(visited, false, n);
+        bfs(0);
+        cout << "|";
         for (int i = 0; i < n; i++) {
+            reachable[i] = visited[i];
+            cout << (visited[i] ? "Y|" : "N|");
+        }
+        printSeparator();
+
+        for (int x = 1; x < n; x++) {
+            memset(visited, false, n);
+            visited[x] = true;
+            bfs(0);
             cout << "|";
-            for (int j = 0; j < n; j++)
-                cout << (relationships[i][j] == 1 ? "Y|" : "N|");
-            cout << "\n";
+            for (int i = 0; i < n; i++) {
+                if (i == x)
+                    cout << (reachable[i] ? "Y|" : "N|");
+                else
+                    cout << (!visited[i] && reachable[i] ? "Y|" : "N|");
+            }
             printSeparator();
         }
     }
