@@ -1,35 +1,28 @@
 #include <iostream>
 #include <functional>
 #include <cstring>
-#include <unordered_map>
 #include <string>
-#include <utility>
 
 using namespace std;
 
 void e_4_2_3_1() {
     int tc;
     cin >> tc;
-    cin.get();
-    cin.get();
 
     bool start = true;
     while (tc--) {
-        string line;
-        getline(cin, line);
-        int maxNode = line[0] - 'A';
+        char c;
+        cin >> c;
+        cin.get();
 
-        int edges[26][27];
+        int maxNode = c - 'A';
+
+        int edges[26][1000];
         for (int i = 0; i <= maxNode; i++)
             edges[i][0] = 0;
 
-        unordered_map<string, bool> inserted;
+        string line;
         while (getline(cin, line), !line.empty()) {
-            if (line[0] > line[1])
-                swap(line[0], line[1]);
-            if (inserted[line])
-                continue;
-            inserted[line] = true;
             int a = line[0] - 'A';
             int b = line[1] - 'A';
             edges[a][++edges[a][0]] = b;
