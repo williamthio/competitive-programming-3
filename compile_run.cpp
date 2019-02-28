@@ -8,7 +8,7 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-    const char *kDirPath = "~/Desktop/cp3";
+    const char *kDirPath = "~/outputs";
 
     if (argc == 1) {
         cout << "File name required.\n";
