@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
 
     sprintf(cmd, "cp \"%s\" \"%s\"/code.txt", filename, kDirPath);
     system(cmd);
-    sprintf(cmd, "cat \"%s\"/code.txt", kDirPath);
+    sprintf(cmd, "cat \"%s\"/output.txt", kDirPath);
     system(cmd);
 
     return 0;
