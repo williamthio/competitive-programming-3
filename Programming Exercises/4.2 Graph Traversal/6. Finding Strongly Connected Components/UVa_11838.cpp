@@ -2,30 +2,25 @@
 
 using namespace std;
 
-void uva_11504() {
-    int tc;
-    cin >> tc;
-    while (tc--) {
-        int n, m;
-        cin >> n >> m;
-
+void uva_11838() {
+    int n, m;
+    while (cin >> n >> m, n && m) {
         vector<vector<int>> adj(n);
         while (m--) {
-            int a, b;
-            cin >> a >> b;
-            adj[a - 1].push_back(b - 1);
+            int v, w, p;
+            cin >> v >> w >> p;
+            adj[v - 1].push_back(w - 1);
+            if (p == 2)
+                adj[w - 1].push_back(v - 1);
         }
-
         int counter = 0;
-        stack<int> s;
-        vector<int> index, lowlink, sccparent;
+        vector<int> index, lowlink;
         vector<bool> onstack;
-        unordered_map<int, bool> knocked;
+        stack<int> s;
         index.assign(n, -1);
         lowlink.assign(n, -1);
-        sccparent.assign(n, -1);
         onstack.assign(n, false);
-
+        int scc = 0;
         function<void(int)> strongconnect = [&](int v) {
             index[v] = lowlink[v] = counter++;
             s.push(v);
@@ -44,45 +39,24 @@ void uva_11504() {
                     int w = s.top();
                     s.pop();
                     onstack[w] = false;
-                    sccparent[w] = v;
                     if (w == v)
                         break;
                 }
-                knocked[v] = false;
+                scc++;
             }
         };
-
         for (int v = 0; v < n; v++) {
             if (index[v] == -1)
                 strongconnect(v);
         }
-
-        for (int i = 0; i < (int)adj.size(); i++) {
-            for (int j = 0; j < (int)adj[i].size(); j++) {
-                //cout << i + 1 << "(" << sccparent[i] << ")" << " - " << adj[i][j] + 1 << "(" << sccparent[adj[i][j]] << ") ";
-                if (sccparent[i] != sccparent[adj[i][j]])
-                    knocked[sccparent[adj[i][j]]] = true;
-                //cout << knocked[sccparent[adj[i][j]]] << "\n";
-            }
-        }
-
-        //for (int i = 0; i < n; i++)
-        //    cout << i + 1 << " -> " << sccparent[i] << "\n";
-
-        int count = 0;
-        for (auto it = knocked.begin(); it != knocked.end(); it++) {
-            //cout << it->first << "\n";
-            if (!it->second)
-                count++;
-        }
-        cout << count << "\n";
+        cout << (scc <= 1) << "\n";
     }
 }
 
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
-    uva_11504();
+    uva_11838();
     return 0;
 }
 
